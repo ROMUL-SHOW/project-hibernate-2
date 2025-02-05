@@ -14,12 +14,12 @@ public class FilmRepositoryDBImpl implements FilmRepository {
 
     @Override
     public List<Film> findAll() {
-        return filmCache.getAll();
+        return filmCache.findAll();
     }
 
     @Override
     public Film findById(Short id) {
-        return filmCache.getById(id);
+        return filmCache.findById(id);
     }
 
     @Override

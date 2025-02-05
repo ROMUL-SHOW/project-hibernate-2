@@ -2,6 +2,7 @@ package org.movie.data.cache;
 
 import org.movie.data.db.dao.FilmDAO;
 import org.movie.data.entity.Film;
+
 import java.util.List;
 
 public class FilmManager {
@@ -11,7 +12,7 @@ public class FilmManager {
         this.filmDAO = filmDAO;
     }
 
-    public List<Film> getAll() {
+    public List<Film> findAll() {
         return filmDAO.findAll();
     }
 
@@ -28,6 +29,6 @@ public class FilmManager {
     }
 
     public void delete(Short id) {
-       filmDAO.delete(id);
+        filmDAO.delete(id);
     }
 }

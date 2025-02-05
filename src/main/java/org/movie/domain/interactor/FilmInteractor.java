@@ -5,7 +5,7 @@ import org.movie.data.entity.Film;
 import java.util.List;
 
 public class FilmInteractor {
-    private FilmRepository filmRepository;
+    private final FilmRepository filmRepository;
 
     public FilmInteractor(FilmRepository filmRepository) {
         this.filmRepository = filmRepository;

@@ -12,12 +12,12 @@ public class FilmCacheImpl implements FilmCache {
     }
 
     @Override
-    public List<Film> getAll() {
-        return filmManager.getAll();
+    public List<Film> findAll() {
+        return filmManager.findAll();
     }
 
     @Override
-    public Film getById(Short id) {
+    public Film findById(Short id) {
         return filmManager.findById(id);
     }
 
