@@ -20,15 +20,24 @@ public class HibernateConfig {
                 prop.put(Environment.URL, "jdbc:p6spy:mysql://localhost:3306/movie");
                 prop.put(Environment.USER, "root");
                 prop.put(Environment.PASS, "root");
-                prop.put(Environment.HBM2DDL_AUTO, "update");
+                prop.put(Environment.HBM2DDL_AUTO, "validate");
 
                 Configuration configuration = new Configuration();
                 configuration.setProperties(prop);
                 configuration.addAnnotatedClass(Actor.class);
+                configuration.addAnnotatedClass(Address.class);
                 configuration.addAnnotatedClass(Category.class);
+                configuration.addAnnotatedClass(City.class);
+                configuration.addAnnotatedClass(Country.class);
+                configuration.addAnnotatedClass(Customer.class);
                 configuration.addAnnotatedClass(Film.class);
                 configuration.addAnnotatedClass(FilmText.class);
+                configuration.addAnnotatedClass(Inventory.class);
                 configuration.addAnnotatedClass(Language.class);
+                configuration.addAnnotatedClass(Payment.class);
+                configuration.addAnnotatedClass(Rental.class);
+                configuration.addAnnotatedClass(Staff.class);
+                configuration.addAnnotatedClass(Store.class);
                 sessionFactory = configuration.buildSessionFactory();
             } catch (Exception e){
                 e.printStackTrace();

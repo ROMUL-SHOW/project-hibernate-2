@@ -54,4 +54,11 @@ public class FilmText {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "FilmText{id=" + id +
+                ", title='" + title +
+                "', description='" + description + "'}";
+    }
 }

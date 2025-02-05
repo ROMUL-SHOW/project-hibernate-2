@@ -1,11 +1,10 @@
 package org.movie.data.entity;
 
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Entity
@@ -15,7 +14,7 @@ public class Category {
     @Id
     @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Byte id;
 
     @Column(name = "name")
     private String name;
@@ -30,11 +29,11 @@ public class Category {
             inverseJoinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"))
     private Set<Film> films;
 
-    public Long getId() {
+    public Byte getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Byte id) {
         this.id = id;
     }
 
@@ -60,5 +59,14 @@ public class Category {
 
     public void setFilms(Set<Film> films) {
         this.films = films;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String dateUpdate = lastUpdate.format(formatter);
+        return "Category{id=" + id +
+                ", name='" + name +
+                "', last update='" + dateUpdate + "'}";
     }
 }

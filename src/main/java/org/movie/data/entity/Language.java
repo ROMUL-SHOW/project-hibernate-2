@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "language", schema = "movie")
@@ -44,5 +44,13 @@ public class Language {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String dateUpdate = lastUpdate.format(formatter);
+        return "Language{id=" + id +
+                ", name='" + name +
+                "', last update='" + dateUpdate + "'}";
     }
 }
