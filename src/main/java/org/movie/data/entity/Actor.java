@@ -2,8 +2,9 @@ package org.movie.data.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Entity
@@ -44,7 +45,8 @@ public class Actor {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName.isBlank() ? null : firstName.trim().toUpperCase();;
+        this.firstName = firstName.isBlank() ? null : firstName.trim().toUpperCase();
+        ;
     }
 
     public String getLastName() {
@@ -73,8 +75,11 @@ public class Actor {
 
     @Override
     public String toString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateUpdate = formatter.format(getLastUpdate());
-        return "Actor{id=" + id + ", first name='" + firstName + ", last name='" + lastName + ", last update='" + dateUpdate + "'}";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String dateUpdate = lastUpdate.format(formatter);
+        return "Actor{id=" + id +
+                ", first_name='" + firstName +
+                "', last_name='" + lastName +
+                "', last_update='" + dateUpdate + "'}";
     }
 }

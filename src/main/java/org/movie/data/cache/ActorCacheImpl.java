@@ -22,6 +22,11 @@ public class ActorCacheImpl implements ActorCache {
     }
 
     @Override
+    public Actor findByFullName(String firstName, String lastName) {
+        return actorManager.findById(firstName, lastName);
+    }
+
+    @Override
     public void save(Actor actor) {
         actorManager.save(actor);
     }

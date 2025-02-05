@@ -18,6 +18,10 @@ public class ActorManager {
         return actorDAO.findById(id);
     }
 
+    public Actor findById(String firstName, String lastName) {
+        return actorDAO.findByFullName(firstName, lastName);
+    }
+
     public void save(Actor actor) {
         actorDAO.save(actor);
     }
