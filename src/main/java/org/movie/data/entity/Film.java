@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,9 @@ public class Film {
     @Type(type = "text")
     private String description;
 
-    @Column(name = "release_year")
-    private Integer releaseYear;
+    @Convert(converter = YearAttributeConverter.class)
+    @Column(name = "release_year", columnDefinition = "YEAR")
+    private Year releaseYear;
 
     @UpdateTimestamp
     @Column(name = "last_update")
@@ -49,7 +51,6 @@ public class Film {
     @Column(name = "special_features", columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
 
-
     @ManyToOne
     @JoinColumn(name = "language_id")
     private Language language;
@@ -57,7 +58,6 @@ public class Film {
     @ManyToOne
     @JoinColumn(name = "original_language_id")
     private Language originalLanguage;
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "film_actor",
@@ -88,11 +88,11 @@ public class Film {
         this.title = title;
     }
 
-    public Integer getReleaseYear() {
+    public Year getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(Integer releaseYear) {
+    public void setReleaseYear(Year releaseYear) {
         this.releaseYear = releaseYear;
     }
 
@@ -196,6 +196,10 @@ public class Film {
 
     @Override
     public String toString() {
-        return "Film{id=" + id + ", title='" + title + ", release_year='" + releaseYear + ", rating='" + rating + "'}";
+        return "Film{id=" + id +
+                  ", title='" + title +
+                  "', rating='" + rating +
+                  "', special_features='" + specialFeatures +
+                  "', release_year='" + releaseYear + "'}";
     }
 }
