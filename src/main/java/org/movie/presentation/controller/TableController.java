@@ -1,6 +1,7 @@
 package org.movie.presentation.controller;
 
 import org.movie.presentation.provider.ActorInteractorProvider;
+import org.movie.presentation.provider.CustomerInteractorProvider;
 import org.movie.presentation.provider.FilmInteractorProvider;
 
 import java.io.BufferedReader;
@@ -12,7 +13,7 @@ public class TableController {
 
     public void start() {
         while (true) {
-            System.out.println("Select table number:\n1. Films\n2. Actors\n\n0. Exit\n");
+            System.out.println("Select table number:\n1. Films\n2. Actors\n3. Customers\n\n0. Exit\n");
             switch (getCommand()) {
                 case "1":
                     FilmInteractorProvider filmInteractorProvider = new FilmInteractorProvider();
@@ -24,7 +25,10 @@ public class TableController {
                     ActorController actorController = new ActorController(actorInteractorProvider.provide());
                     actorController.start();
                     break;
-                default:
+                case "3":
+                    CustomerInteractorProvider customerInteractorProvider = new CustomerInteractorProvider();
+                    CustomerController customerController = new CustomerController(customerInteractorProvider.provide());
+                    customerController.start();
                     break;
             }
         }
@@ -34,7 +38,7 @@ public class TableController {
         String command = null;
         try {
             command = reader.readLine();
-            if (command.equals("0")) {
+            if (command != null && command.equals("0")) {
                 reader.close();
                 System.exit(0);
             }
