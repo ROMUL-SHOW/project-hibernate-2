@@ -17,19 +17,15 @@ public class ActorInteractor {
         return actorRepository.findById(id);
     }
     public Actor findByFullName(String firstName, String lastName) {
-        return actorRepository.findByFullName(firstName.toUpperCase(), lastName.toUpperCase());
+        return actorRepository.findByFullName(firstName, lastName);
     }
     public void save(Actor actor) {
-        actor.setFirstName(actor.getFirstName().toUpperCase());
-        actor.setLastName(actor.getLastName().toUpperCase());
         actorRepository.save(actor);
     }
     public void delete(Short id) {
         actorRepository.delete(id);
     }
     public void update(Actor actor) {
-        actor.setFirstName(actor.getFirstName().toUpperCase());
-        actor.setLastName(actor.getLastName().toUpperCase());
         actorRepository.update(actor);
     }
 }
