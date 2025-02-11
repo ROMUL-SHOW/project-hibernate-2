@@ -28,7 +28,7 @@ public class ActorDAO {
 
     public Actor findByFullName(String firstName, String lastName) {
         try (Session session = HibernateUtil.getSession()) {
-            String hql = "FROM Actor WHERE firstName = :firstName AND lastName = :lastName";
+            String hql = "FROM Actor WHERE UPPER(firstName) = :firstName AND UPPER(lastName) = :lastName";
             Query<Actor> query = session.createQuery(hql, Actor.class);
             query.setParameter("firstName", firstName);
             query.setParameter("lastName", lastName);
