@@ -2,25 +2,33 @@ package org.movie.presentation.controller;
 
 import org.movie.data.entity.Address;
 import org.movie.data.entity.Customer;
+import org.movie.data.entity.Staff;
+import org.movie.data.entity.Store;
 import org.movie.domain.interactor.CustomerInteractor;
+import org.movie.presentation.presenter.CustomerPresenter;
 
 import java.util.List;
 
-public class CustomerController {
+public class CustomerController implements Controller {
     private final CustomerInteractor customerInteractor;
-    private final static String menu = "\nSelect customer number:\n1. Find all customers\n2. Find customer by ID\n3. Save customer\n4. Update customer\n5. Delete customer\n6. Return to main menu\n\n0. Exit\n";
+    private final Controller controller;
+    private final CustomerPresenter customerPresenter;
+    private boolean isRunning = true;
 
-    public CustomerController(CustomerInteractor customerInteractor) {
+    public CustomerController(CustomerInteractor customerInteractor, Controller controller, CustomerPresenter customerPresenter) {
         this.customerInteractor = customerInteractor;
+        this.controller = controller;
+        this.customerPresenter = customerPresenter;
     }
 
+    @Override
     public void start() {
-        while (true) {
-            System.out.println(menu);
+        while (isRunning) {
+            customerPresenter.showMenu();
             switch (TableController.getCommand()) {
                 case "1":
                     List<Customer> customers = customerInteractor.findAll();
-                    customers.forEach(System.out::println);
+                    customerPresenter.showCustomer(customers);
                     break;
                 case "2":
                     findCustomer();
@@ -35,9 +43,7 @@ public class CustomerController {
                     deleteCustomer();
                     break;
                 case "6":
-                    System.out.println();
-                    TableController tableController = new TableController();
-                    tableController.start();
+                    this.controller.start();
                     break;
             }
         }
@@ -45,12 +51,12 @@ public class CustomerController {
 
     private void findCustomer() {
         while (true) {
-            System.out.println("\nEnter customer id");
+            customerPresenter.promptForCustomerId();
             Short idForSearch = parseShortInput();
             Customer customer = customerInteractor.findById(idForSearch);
             if (customer != null) {
-                System.out.println(customer);
-                System.out.println("\nShow  " + customer.getFirstName() + " " + customer.getLastName() + "'s address?\n1. Yes\n2. No");
+                customerPresenter.showCustomer(customer);
+                customerPresenter.promptShowAddress(customer.getFirstName(), customer.getLastName());
                 while (true) {
                     String input = TableController.getCommand();
                     if (input.equals("1")) {
@@ -63,9 +69,9 @@ public class CustomerController {
                     }
                 }
             } else {
-                System.out.println("\nCustomer not found");
+                customerPresenter.customerNotFound();
             }
-            System.out.println("\nFind next customer?\n1. Yes\n2. No, back to customer menu\n\n0. Exit");
+            customerPresenter.promptShowNextCustomer();
             String input;
             while (true) {
                 input = TableController.getCommand();
@@ -85,30 +91,49 @@ public class CustomerController {
         }
     }
 
+
     private void saveCustomer() {
-        System.out.println("\nEnter first name");
+        customerPresenter.promptForCustomerFirstName();
         String firstName = TableController.getCommand();
-        System.out.println("Enter last name");
+        customerPresenter.promptForCustomerLastName();
         String lastName = TableController.getCommand();
         Customer newCustomer = new Customer();
         newCustomer.setFirstName(firstName);
         newCustomer.setLastName(lastName);
+
+        // TODO: will add logic with other fields for newCustomer
+        Staff staff = new Staff();
+        staff.setId(Byte.parseByte("2"));
+
+        Address address = new Address();
+        address.setId(Short.parseShort("123"));
+
+        Store store = new Store();
+        store.setId(Byte.parseByte("2"));
+        store.setStaff(staff);
+        store.setAddress(address);
+
+        newCustomer.setActive(true);
+        newCustomer.setStore(store);
+        newCustomer.setAddress(address);
+        /////////////////////////////////////////////
+
         customerInteractor.save(newCustomer);
     }
 
     private void updateCustomer() {
         while (true) {
-            System.out.println("\nEnter customer id");
+            customerPresenter.promptForCustomerId();
             Short idForUpdate = parseShortInput();
             Customer customerForUpdate = customerInteractor.findById(idForUpdate);
             if (customerForUpdate == null) {
-                System.out.println("Customer not found");
+                customerPresenter.customerNotFound();
                 break;
             }
-            System.out.println(customerForUpdate);
+            customerPresenter.showCustomer(customerForUpdate);
 
             while (true) {
-                System.out.println("\nSelect the field number for update:\n1. First name\n2. Last name\n3. Finish the update");
+                customerPresenter.promptForUpdateOption();
                 String input = TableController.getCommand();
                 if (input.equals("3")) {
                     break;
@@ -128,7 +153,7 @@ public class CustomerController {
                         continue;
                 }
             }
-            System.out.println("\nFind next customer for update?\n1. Yes\n2. No, back to customer menu\n\n0. Exit");
+            customerPresenter.promptUpdateNextCustomer();
             String input;
             while (true) {
                 input = TableController.getCommand();
@@ -149,7 +174,7 @@ public class CustomerController {
     }
 
     private void deleteCustomer() {
-        System.out.println("Enter customer id");
+        customerPresenter.promptForCustomerId();
         Short idForDelete = parseShortInput();
         customerInteractor.delete(idForDelete);
     }
@@ -159,7 +184,7 @@ public class CustomerController {
             try{
                 return Short.parseShort(TableController.getCommand());
             } catch (NumberFormatException e){
-                System.out.println("Invalid input. Please enter a valid number.");
+                customerPresenter.invalidInputMessage();
             }
         }
     }

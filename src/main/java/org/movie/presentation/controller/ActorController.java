@@ -3,27 +3,32 @@ package org.movie.presentation.controller;
 import org.movie.data.entity.Actor;
 import org.movie.data.entity.Film;
 import org.movie.domain.interactor.ActorInteractor;
+import org.movie.presentation.presenter.ActorPresenter;
 
 import java.util.List;
 import java.util.Set;
 
-public class ActorController {
+public class ActorController implements Controller {
     private final ActorInteractor actorInteractor;
+    private final Controller controller;
+    private final ActorPresenter actorPresenter;
+    private boolean isRunning = true;
 
-    private final static String menu = "\nSelect action number:\n1. Find all actors\n2. Find actor\n3. Save actor\n4. Update actor\n5. Delete actor\n6. Return to main menu\n\n0. Exit\n";
-
-    public ActorController(ActorInteractor actorInteractor) {
+    public ActorController(ActorInteractor actorInteractor, Controller controller, ActorPresenter actorPresenter) {
         this.actorInteractor = actorInteractor;
+        this.controller = controller;
+        this.actorPresenter = actorPresenter;
     }
 
+    @Override
     public void start() {
-        while (true) {
-            System.out.println(menu);
+        while (isRunning) {
+            actorPresenter.showMenu();
 
             switch (TableController.getCommand()) {
                 case "1":
                     List<Actor> actors = actorInteractor.findAll();
-                    actors.forEach(System.out::println);
+                    actorPresenter.showActors(actors);
                     break;
                 case "2":
                     this.findActor();
@@ -38,9 +43,7 @@ public class ActorController {
                     this.deleteActor();
                     break;
                 case "6":
-                    System.out.println();
-                    TableController tableController = new TableController();
-                    tableController.start();
+                    this.controller.start();
                     break;
             }
         }
@@ -48,8 +51,7 @@ public class ActorController {
 
     private void findActor() {
         while (true) {
-            String searchMenu = "1. Find actor by ID\n2. Find actor by full name\n\n3.Back to actor menu";
-            System.out.println(searchMenu);
+            actorPresenter.promptForSearchOption();
             String command = TableController.getCommand();
             if (command.equals("3")) {
                 return;
@@ -57,14 +59,14 @@ public class ActorController {
             Actor actor = null;
             switch (command) {
                 case "1":
-                    System.out.println("\nEnter actor id");
+                    actorPresenter.promptForActorId();
                     Short idForSearch = parseShortInput();
                     actor = actorInteractor.findById(idForSearch);
                     break;
                 case "2":
-                    System.out.println("\nEnter first name");
+                    actorPresenter.promptForActorFirstName();
                     String firstName = TableController.getCommand();
-                    System.out.println("Enter last name");
+                    actorPresenter.promptForActorLastName();
                     String lastName = TableController.getCommand();
                     actor = actorInteractor.findByFullName(firstName, lastName);
                     break;
@@ -72,8 +74,8 @@ public class ActorController {
                     continue;
             }
             if (actor != null) {
-                System.out.println(actor);
-                System.out.println("\nShow all movies with " + actor.getFirstName() + " " + actor.getLastName() + "?\n1. Yes\n2. No");
+                actorPresenter.showActor(actor);
+                actorPresenter.promptShowFilms(actor.getFirstName(), actor.getLastName());
                 while (true) {
                     String input = TableController.getCommand();
                     if (input.equals("1")) {
@@ -88,9 +90,9 @@ public class ActorController {
                     }
                 }
             } else {
-                System.out.println("\nActor not found");
+                actorPresenter.actorNotFound();
             }
-            System.out.println("\nFind next actor?\n1. Yes\n2. No, back to actor menu\n\n0. Exit");
+            actorPresenter.promptShowNextActor();
             String input;
             while (true) {
                 input = TableController.getCommand();
@@ -111,9 +113,9 @@ public class ActorController {
     }
 
     private void saveActor() {
-        System.out.println("\nEnter first name");
+        actorPresenter.promptForActorFirstName();
         String firstName = TableController.getCommand();
-        System.out.println("Enter last name");
+        actorPresenter.promptForActorLastName();
         String lastName = TableController.getCommand();
         Actor newActor = new Actor();
         newActor.setFirstName(firstName);
@@ -123,16 +125,18 @@ public class ActorController {
 
     private void updateActor() {
         while (true) {
-            System.out.println("\nEnter actor id");
+
+            actorPresenter.promptForActorId();
             Short idForUpdate = parseShortInput();
             Actor actorForUpdate = actorInteractor.findById(idForUpdate);
             if (actorForUpdate == null) {
-                System.out.println("Actor not found");
+                actorPresenter.actorNotFound();
                 break;
             }
-            System.out.println(actorForUpdate);
+            actorPresenter.showActor(actorForUpdate);
+
             while (true) {
-                System.out.println("\nSelect the field number for update:\n1. First name\n2. Last name\n3. Finish the update");
+                actorPresenter.promptForUpdateOption();
                 String input = TableController.getCommand();
                 if (input.equals("3")) {
                     break;
@@ -152,7 +156,7 @@ public class ActorController {
                         continue;
                 }
             }
-            System.out.println("\nFind next actor for update?\n1. Yes\n2. No, back to actor menu\n\n0. Exit");
+            actorPresenter.promptUpdateNextActor();
             String input;
             while (true) {
                 input = TableController.getCommand();
@@ -173,17 +177,17 @@ public class ActorController {
     }
 
     private void deleteActor() {
-        System.out.println("Enter actor id");
+        actorPresenter.promptForActorId();
         Short idForDelete = parseShortInput();
         actorInteractor.delete(idForDelete);
     }
 
-    private Short parseShortInput(){
-        while (true){
-            try{
+    private Short parseShortInput() {
+        while (true) {
+            try {
                 return Short.parseShort(TableController.getCommand());
-            } catch (NumberFormatException e){
-                System.out.println("Invalid input. Please enter a valid number.");
+            } catch (NumberFormatException e) {
+                actorPresenter.invalidInputMessage();
             }
         }
     }

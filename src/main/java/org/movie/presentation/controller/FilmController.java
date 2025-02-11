@@ -1,54 +1,54 @@
 package org.movie.presentation.controller;
 
-import org.movie.data.entity.Actor;
 import org.movie.data.entity.Film;
 import org.movie.domain.interactor.FilmInteractor;
+import org.movie.presentation.presenter.FilmPresenter;
 
 import java.util.List;
-import java.util.Set;
 
-public class FilmController {
-    private FilmInteractor filmInteractor;
-    private final static String menu = "\nSelect action number:\n1. Find all films\n2. Find film by ID\n3. Return to main menu\n\n0. Exit\n";
+public class FilmController implements Controller {
+    private final FilmInteractor filmInteractor;
+    private final Controller controller;
+    private final FilmPresenter filmPresenter;
+    private boolean isRunning = true;
 
-    public FilmController(FilmInteractor filmInteractor) {
+    public FilmController(FilmInteractor filmInteractor, Controller controller, FilmPresenter filmPresenter) {
         this.filmInteractor = filmInteractor;
+        this.controller = controller;
+        this.filmPresenter = filmPresenter;
     }
 
+    @Override
     public void start() {
-        while (true) {
-            System.out.println(menu);
+        while (isRunning) {
+            filmPresenter.showMenu();
             switch (TableController.getCommand()) {
                 case "1":
                     List<Film> films = filmInteractor.findAll();
-                    films.forEach(System.out::println);
+                    filmPresenter.showFilms(films);
                     break;
                 case "2":
                     findFilm();
                     break;
                 case "3":
-                    System.out.println();
-                    TableController tableController = new TableController();
-                    tableController.start();
+                    controller.start();
                     break;
             }
         }
     }
-    private void findFilm(){
+
+    private void findFilm() {
         while (true) {
-            System.out.println("\nEnter film id");
+            filmPresenter.promptForFilmId();
             Short idForSearch = parseShortInput();
             Film film = filmInteractor.findById(idForSearch);
             if (film != null) {
-                System.out.println(film);
-                System.out.println("\nShow all the actors from \"" + film.getTitle() + "\"?\n1. Yes\n2. No");
+                filmPresenter.showFilm(film);
+                filmPresenter.promptShowActors(film.getTitle());
                 while (true) {
                     String input = TableController.getCommand();
                     if (input.equals("1")) {
-                        Set<Actor> actors = film.getActors();
-                        actors.stream()
-                                .map(actor -> actor.getFirstName() + " " + actor.getLastName())
-                                .forEach(System.out::println);
+                        filmPresenter.showActors(film);
                         break;
                     }
                     if (input.equals("2")) {
@@ -56,9 +56,9 @@ public class FilmController {
                     }
                 }
             } else {
-                System.out.println("\nFilm not found");
+                filmPresenter.filmNotFound();
             }
-            System.out.println("\nFind next film?\n1. Yes\n2. No, back to film menu\n\n0. Exit");
+            filmPresenter.promptShowNextFilm();
             String input;
             while (true) {
                 input = TableController.getCommand();
@@ -78,12 +78,13 @@ public class FilmController {
             }
         }
     }
+
     private Short parseShortInput(){
         while (true){
             try{
                 return Short.parseShort(TableController.getCommand());
             } catch (NumberFormatException e){
-                System.out.println("Invalid input. Please enter a valid number.");
+                filmPresenter.invalidInputMessage();
             }
         }
     }
