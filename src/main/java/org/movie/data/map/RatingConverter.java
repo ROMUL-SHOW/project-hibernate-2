@@ -1,7 +1,8 @@
-package org.movie.data.entity;
+package org.movie.data.map;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.movie.data.entity.Rating;
 
 @Converter(autoApply = true)
 public class RatingConverter implements AttributeConverter<Rating, String> {

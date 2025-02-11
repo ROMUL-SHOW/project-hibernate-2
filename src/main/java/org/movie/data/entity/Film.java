@@ -3,6 +3,9 @@ package org.movie.data.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.movie.data.map.RatingConverter;
+import org.movie.data.map.YearAttributeConverter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Year;

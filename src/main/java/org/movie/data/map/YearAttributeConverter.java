@@ -1,4 +1,4 @@
-package org.movie.data.entity;
+package org.movie.data.map;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
