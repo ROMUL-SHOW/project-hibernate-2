@@ -100,9 +100,11 @@ public class Payment {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String datePayment = paymentDate.format(formatter);
         String dateUpdate = lastUpdate.format(formatter);
+        String rentalId = rental != null ? rental.getId().toString() : "null";
+
         return "Payment{id=" + id +
                 ", customer_id='" + customer.getId() +
-                "', rental_id='" + rental.getId() +
+                "', rental_id='" + rentalId +
                 "', amount='" + amount +
                 "', payment_date='" + datePayment +
                 "', last_update='" + dateUpdate + "'}";
