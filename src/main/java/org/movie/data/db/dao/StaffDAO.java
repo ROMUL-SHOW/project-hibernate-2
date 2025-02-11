@@ -2,6 +2,7 @@ package org.movie.data.db.dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.query.Query;
 import org.movie.data.db.util.HibernateUtil;
 import org.movie.data.entity.Staff;
@@ -29,7 +30,7 @@ public class StaffDAO {
             Transaction tx = session.beginTransaction();
             session.save(staff);
             tx.commit();
-        }
+        } catch (IdentifierGenerationException e){}
     }
     public void update(Staff staff) {
         try(Session session = HibernateUtil.getSession()) {

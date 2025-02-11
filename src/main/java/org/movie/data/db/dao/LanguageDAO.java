@@ -2,6 +2,7 @@ package org.movie.data.db.dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.query.Query;
 import org.movie.data.db.util.HibernateUtil;
 import org.movie.data.entity.Language;
@@ -29,7 +30,7 @@ public class LanguageDAO {
             Transaction tx = session.beginTransaction();
             session.save(language);
             tx.commit();
-        }
+        } catch (IdentifierGenerationException e){}
     }
     public void update(Language language) {
         try(Session session = HibernateUtil.getSession()) {
