@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 @Entity
 @Table(name = "staff", schema = "movie")
@@ -143,6 +142,7 @@ public class Staff {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        Long pictureLength = getPicture() != null ? getPicture().length : -1l;
         String dateUpdate = lastUpdate.format(formatter);
         return "Staff{id=" + id +
                 ", first_name='" + firstName +
@@ -150,7 +150,7 @@ public class Staff {
                 "', address_id=" + address.getId() +
                 ", picture=" + picture.length +
                 ", active=" + isActive +
-                "', email='" + email +
+                ", email='" + email +
                 "', username='" + username +
                 "', password='" + password +
                 "', last_update='" + dateUpdate + "'}";
